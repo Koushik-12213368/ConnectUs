@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import Navbar from './landingPage/Navbar';
+import HomePage from './landingPage/home/HomePage';
+import Footer from './landingPage/Footer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <>
     {/* <h1>Testing</h1> */}
+    <Navbar/>
+    <HomePage/>
+    <Footer/>
+
     </>
   </React.StrictMode>
 );
