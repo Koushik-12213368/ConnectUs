@@ -1,16 +1,17 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div className="container">
-        <a className="navbar-brand d-flex align-items-center" href="/">
+        <Link className="navbar-brand d-flex align-items-center" to="/">
           <img 
             src="Images/logo1.png" 
             alt="MindWell" 
             style={{ width: "15%", marginRight: "10px" }}
           />
-        </a>
+        </Link>
 
         <button 
           className="navbar-toggler" 
@@ -28,22 +29,22 @@ function Navbar() {
                 gap: "30px"  
             }}>  
             <li className="nav-item">
-              <a className="nav-link active NavLink" href="/">Home</a>
+              <Link className="nav-link active NavLink" to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link active NavLink" href="/resources">Resources</a>
+              <Link className="nav-link active NavLink" to="/resources">Resources</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link active NavLink" href="/community">Community</a>
+              <Link className="nav-link active NavLink" to="/community">Community</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link active NavLink" href="/about" style={{whiteSpace: "nowrap"}}>About us</a>
+              <Link className="nav-link active NavLink" to="/about" style={{whiteSpace: "nowrap"}}>About us</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link active NavLink" href="/login">Login</a>
+              <Link className="nav-link active NavLink" to="/login">Login</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link active NavLink" href="/signup" style={{whiteSpace: "nowrap"}}>Sign Up</a>
+              <Link className="nav-link active NavLink" to="/signup" style={{whiteSpace: "nowrap"}}>Sign Up</Link>
             </li>
           </ul>
         </div>
