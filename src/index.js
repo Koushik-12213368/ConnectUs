@@ -8,6 +8,9 @@ import Footer from './landingPage/Footer';
 import ResourcePage from './landingPage/resources/ResourcePage';
 import LoginPage from './landingPage/login/LoginPage';
 import SignupPage from './landingPage/signup/SignupPage';
+import Assessment from './landingPage/assesment/Assesment';
+import CommunityPage from "./landingPage/community/CommunityPage";
+import AboutPage from './landingPage/about/AboutPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,6 +21,9 @@ root.render(
       <Route path='/resources' element={<ResourcePage/>} />
       <Route path='/login' element={<LoginPage/>} />
       <Route path='/signup' element={<SignupPage/>} />
+      <Route path='/assesment' element={<Assessment/>} />
+      <Route path='/community' element={<CommunityPage/>} />
+      <Route path='/about' element={<AboutPage/>} />
     </Routes>
     <Footer/>
   </BrowserRouter>

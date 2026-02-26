@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import React from "react";
+
 
 function Hero() {
     return(
@@ -24,8 +26,8 @@ function Hero() {
                     <p className="fs-5">- Anonymous Student</p>
 
                     <div className="d-flex justify-content-center gap-3 mt-4">
-                        <button className="btn btn-primary btn-lg px-4">Check-In</button>
-                        <button className="btn btn-outline-light btn-lg px-4">Explore Resources</button>
+                        <Link className="btn btn-primary btn-lg px-4 btnCheck" to="/login">Check-In</Link>
+                        <Link className="btn btn-outline-light btn-lg px-4 btnDec" to="/resources">Explore Resources</Link>
                     </div>
 
                     <div className="mt-4 ">

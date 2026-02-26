@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Resource() {
     return (
@@ -42,9 +43,9 @@ function Resource() {
                     </div>
                 </div>
                 <div className="text-center mt-5">
-                    <button className="stress-btn mb-5">
+                    <Link className="stress-btn mb-5" to="/resources" style={{textDecoration: "none"}}>
                         View All →
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>
