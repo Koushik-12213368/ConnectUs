@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Feeling() {
     return(
@@ -40,10 +41,10 @@ function Feeling() {
                 </div>
 
                 {/* Assessment Button */}
-                <div className="mt-5">
-                    <button className="assessment-btn">
+                <div className="mt-5" >
+                    <Link  to ="/assesment"className="assessment-btn" style={{textDecoration:"none"}}>
                         Take Full Assessment Now!
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>
