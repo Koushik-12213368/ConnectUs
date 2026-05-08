@@ -28,9 +28,7 @@ app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(cookieParser());
 
 app.use(cors({
-  origin: [
-    "https://connect-us-xi-nine.vercel.app"
-  ],
+  origin: "https://connect-us-xi-nine.vercel.app",
   credentials: true
 }));
 
