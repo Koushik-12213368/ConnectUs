@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-app.set("trust proxy", 1);
 const mongoose = require("mongoose");
 const dns = require("dns");
 const cors = require("cors");
@@ -9,6 +8,7 @@ const cookieParser = require("cookie-parser");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const app = express();
+app.set("trust proxy", 1);
 const url = process.env.MONGO_URL;
 const PORT = process.env.PORT || 8080;
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
@@ -32,7 +32,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.options("*", cors());
+app.options(/.*/, cors());
 
 // Routes: 
 
