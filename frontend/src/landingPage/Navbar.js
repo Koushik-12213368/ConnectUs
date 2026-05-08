@@ -64,9 +64,9 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link active NavLink" to="/community">Community</Link>
             </li>
-            
-            <li className="nav-item"> 
-              <Link className="nav-link active NavLink" to="/secure-chat">Secure Chat</Link> 
+
+             <li className="nav-item">
+              <Link className="nav-link active NavLink" to="/secure-chat">Secret Chat</Link>
             </li>
 
             <li className="nav-item">

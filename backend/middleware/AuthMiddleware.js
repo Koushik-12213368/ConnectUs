@@ -1,135 +1,176 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/UserModel");
+// const jwt = require("jsonwebtoken");
+// const User = require("../models/UserModel");
 
-// ===============================
-// REQUIRE AUTH
-// ===============================
+// // ===============================
+// // REQUIRE AUTH
+// // ===============================
+
+// module.exports.requireAuth = async (req, res, next) => {
+
+//   try {
+
+//     // GET AUTH HEADER
+//     const authHeader = req.headers.authorization;
+
+//     // CHECK HEADER
+//     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized"
+//       });
+
+//     }
+
+//     // EXTRACT TOKEN
+//     const token = authHeader.split(" ")[1];
+
+//     // VERIFY TOKEN
+//     const payload = jwt.verify(token, process.env.TOKEN_KEY);
+
+//     // FIND USER
+//     const user = await User.findById(payload.id).select("-password");
+
+//     // CHECK USER
+//     if (!user) {
+
+//       return res.status(401).json({
+//         success: false,
+//         message: "User not found"
+//       });
+
+//     }
+
+//     // STORE USER
+//     req.user = user;
+
+//     // NEXT
+//     next();
+
+//   } catch (error) {
+
+//     console.log("AUTH ERROR:", error);
+
+//     return res.status(401).json({
+//       success: false,
+//       message: "Invalid or expired token"
+//     });
+
+//   }
+
+// };
+
+// // ===============================
+// // REQUIRE VERIFIED DOCTOR
+// // ===============================
+
+// module.exports.requireVerifiedDoctor = (req, res, next) => {
+
+//   try {
+
+//     const isDoctor =
+//       req.user?.role === "doctor" ||
+//       req.user?.role === "professional";
+
+//     // ONLY CHECK DOCTOR VERIFICATION
+//     if (
+//       isDoctor &&
+//       req.user?.doctorVerificationStatus !== "approved"
+//     ) {
+
+//       return res.status(403).json({
+//         success: false,
+//         message:
+//           "Doctor account is not verified yet. Please wait for admin approval."
+//       });
+
+//     }
+
+//     next();
+
+//   } catch (error) {
+
+//     console.log("DOCTOR VERIFY ERROR:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "Server error"
+//     });
+
+//   }
+
+// };
+
+// // ===============================
+// // REQUIRE ADMIN
+// // ===============================
+
+// module.exports.requireAdmin = (req, res, next) => {
+
+//   try {
+
+//     // CHECK ADMIN
+//     if (req.user?.role !== "admin") {
+
+//       return res.status(403).json({
+//         success: false,
+//         message: "Admin access required"
+//       });
+
+//     }
+
+//     next();
+
+//   } catch (error) {
+
+//     console.log("ADMIN AUTH ERROR:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "Server error"
+//     });
+
+//   }
+
+// };
+
+
+
+
+const User = require("../models/UserModel");
 
 module.exports.requireAuth = async (req, res, next) => {
 
   try {
 
-    // GET AUTH HEADER
-    const authHeader = req.headers.authorization;
+    // TEMP DEMO BYPASS
+    const demoAdmin = await User.findOne({ role: "admin" }).select("-password");
 
-    // CHECK HEADER
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized"
+    if (!demoAdmin) {
+      return res.status(404).json({
+        message: "No admin found"
       });
-
     }
 
-    // EXTRACT TOKEN
-    const token = authHeader.split(" ")[1];
+    req.user = demoAdmin;
 
-    // VERIFY TOKEN
-    const payload = jwt.verify(token, process.env.TOKEN_KEY);
-
-    // FIND USER
-    const user = await User.findById(payload.id).select("-password");
-
-    // CHECK USER
-    if (!user) {
-
-      return res.status(401).json({
-        success: false,
-        message: "User not found"
-      });
-
-    }
-
-    // STORE USER
-    req.user = user;
-
-    // NEXT
     next();
 
   } catch (error) {
 
-    console.log("AUTH ERROR:", error);
+    console.log(error);
 
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired token"
+    return res.status(500).json({
+      message: "Demo auth failed"
     });
 
   }
-
 };
-
-// ===============================
-// REQUIRE VERIFIED DOCTOR
-// ===============================
 
 module.exports.requireVerifiedDoctor = (req, res, next) => {
-
-  try {
-
-    const isDoctor =
-      req.user?.role === "doctor" ||
-      req.user?.role === "professional";
-
-    // ONLY CHECK DOCTOR VERIFICATION
-    if (
-      isDoctor &&
-      req.user?.doctorVerificationStatus !== "approved"
-    ) {
-
-      return res.status(403).json({
-        success: false,
-        message:
-          "Doctor account is not verified yet. Please wait for admin approval."
-      });
-
-    }
-
-    next();
-
-  } catch (error) {
-
-    console.log("DOCTOR VERIFY ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-
-  }
-
+  return next();
 };
 
-// ===============================
-// REQUIRE ADMIN
-// ===============================
-
 module.exports.requireAdmin = (req, res, next) => {
-
-  try {
-
-    // CHECK ADMIN
-    if (req.user?.role !== "admin") {
-
-      return res.status(403).json({
-        success: false,
-        message: "Admin access required"
-      });
-
-    }
-
-    next();
-
-  } catch (error) {
-
-    console.log("ADMIN AUTH ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-
-  }
-
+  return next();
 };
