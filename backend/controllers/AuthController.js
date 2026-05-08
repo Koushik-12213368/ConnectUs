@@ -101,7 +101,7 @@ module.exports.Login = async (req, res) => {
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "None",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000
     };
