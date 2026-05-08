@@ -14,6 +14,7 @@ function AdminDashboardPage() {
   const token = localStorage.getItem("token");
 
   const loadItems = async () => {
+
     try {
 
       setError("");
@@ -32,17 +33,21 @@ function AdminDashboardPage() {
 
     } catch (e) {
 
-      console.log(e);
+      console.log("LOAD ERROR:", e);
 
       setError(
         e.response?.data?.message ||
         "Failed to load verification submissions."
       );
+
     }
+
   };
 
   useEffect(() => {
+
     loadItems();
+
   }, []);
 
   const review = async (id, status) => {
@@ -68,7 +73,9 @@ function AdminDashboardPage() {
 
       setSuccess(
         `Doctor has been ${
-          status === "approved" ? "approved" : "rejected"
+          status === "approved"
+            ? "approved"
+            : "rejected"
         }.`
       );
 
@@ -76,7 +83,7 @@ function AdminDashboardPage() {
 
     } catch (e) {
 
-      console.log(e);
+      console.log("REVIEW ERROR:", e);
 
       setError(
         e.response?.data?.message ||
@@ -88,6 +95,7 @@ function AdminDashboardPage() {
       setLoadingId("");
 
     }
+
   };
 
   return (
@@ -136,8 +144,8 @@ function AdminDashboardPage() {
                     </div>
 
                     <div className="small mt-1">
-                      Current status:{" "}
-                      <span className="badge bg-secondary">
+                      Current status:
+                      <span className="badge bg-secondary ms-1">
                         {item.status}
                       </span>
                     </div>
@@ -145,7 +153,8 @@ function AdminDashboardPage() {
                   </div>
 
                   <div className="small text-muted">
-                    Submitted:{" "}
+                    Submitted:
+                    {" "}
                     {new Date(item.updatedAt).toLocaleString()}
                   </div>
 
@@ -157,7 +166,8 @@ function AdminDashboardPage() {
                     Uploaded Documents
                   </h6>
 
-                  {(item.documents && item.documents.length > 0) ? (
+                  {(item.documents &&
+                    item.documents.length > 0) ? (
 
                     <ul className="mb-2">
 
@@ -173,9 +183,7 @@ function AdminDashboardPage() {
                             {doc.name}
                           </a>
 
-                          {" "}
-
-                          <span className="text-muted small">
+                          <span className="text-muted small ms-2">
                             ({Math.round(doc.size / 1024)} KB)
                           </span>
 
@@ -204,7 +212,11 @@ function AdminDashboardPage() {
                   <textarea
                     className="form-control"
                     rows={2}
-                    value={notesById[item._id] ?? item.adminNotes ?? ""}
+                    value={
+                      notesById[item._id] ??
+                      item.adminNotes ??
+                      ""
+                    }
                     onChange={(e) =>
                       setNotesById((prev) => ({
                         ...prev,
@@ -219,16 +231,24 @@ function AdminDashboardPage() {
 
                   <button
                     className="btn btn-success btn-sm"
-                    onClick={() => review(item._id, "approved")}
-                    disabled={loadingId === item._id + "approved"}
+                    onClick={() =>
+                      review(item._id, "approved")
+                    }
+                    disabled={
+                      loadingId === item._id + "approved"
+                    }
                   >
                     Approve
                   </button>
 
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => review(item._id, "rejected")}
-                    disabled={loadingId === item._id + "rejected"}
+                    onClick={() =>
+                      review(item._id, "rejected")
+                    }
+                    disabled={
+                      loadingId === item._id + "rejected"
+                    }
                   >
                     Reject
                   </button>
@@ -244,15 +264,18 @@ function AdminDashboardPage() {
         ))}
 
         {!error && !items.length && (
+
           <p className="text-muted">
             No submissions yet.
           </p>
+
         )}
 
       </div>
 
     </div>
   );
+
 }
 
 export default AdminDashboardPage;
