@@ -174,22 +174,39 @@ function SecureChatPage() {
     setMessages(parsed);
   };
 
-  useEffect(() => {
-    let intervalRef;
-    (async () => {
-      try {
-        const meRes = await axios.get(apiUrl("/auth/me"), { withCredentials: true });
+ useEffect(() => {
+  (async () => {
+    try {
+      const meRes = await axios.get(apiUrl("/auth/me"), {
+        withCredentials: true,
+        headers: { "Cache-Control": "no-cache" }
+      });
+      if (meRes.data?.user) {
         setMe(meRes.data.user);
+        setError("");
         await setupKeys(meRes.data.user);
-      } catch (e) {
+      } else {
         setError("Please login first to access secure chat.");
       }
-    })();
-
-    return () => {
-      if (intervalRef) clearInterval(intervalRef);
-    };
-  }, []);
+    } catch (e) {
+      console.error("Auth error:", e.response?.status, e.response?.data);
+      // Try reading user from localStorage as fallback
+      try {
+        const stored = localStorage.getItem("user");
+        if (stored) {
+          const user = JSON.parse(stored);
+          setMe(user);
+          setError("");
+          await setupKeys(user);
+        } else {
+          setError("Please login first to access secure chat.");
+        }
+      } catch {
+        setError("Please login first to access secure chat.");
+      }
+    }
+  })();
+}, []);
 
   useEffect(() => {
     if (!me) return;
