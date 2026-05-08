@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../../config";
-
-const API = API_BASE_URL;
+import { apiUrl } from "../../config";
 
 const toBase64 = (buffer) => {
   const bytes = new Uint8Array(buffer);
@@ -95,7 +93,7 @@ function SecureChatPage() {
 
   const fetchRooms = async () => {
     try {
-      const { data } = await axios.get(`${API}/secure-chat/rooms`, {
+      const { data } = await axios.get(apiUrl("/secure-chat/rooms"), {
         withCredentials: true
       });
       setRooms(data.rooms || []);
@@ -132,7 +130,7 @@ function SecureChatPage() {
     localStorage.setItem(storageKey, priv);
 
     await axios.put(
-      `${API}/auth/public-key`,
+      apiUrl("/auth/public-key"),
       { encryptionPublicKey: pub },
       { withCredentials: true }
     );
@@ -143,7 +141,7 @@ function SecureChatPage() {
   const fetchUsers = async (isDoctor) => {
     try {
       const role = isDoctor ? "patient" : "doctor";
-      const { data } = await axios.get(`${API}/secure-chat/users?role=${role}`, {
+      const { data } = await axios.get(apiUrl(`/secure-chat/users?role=${role}`), {
         withCredentials: true
       });
       setDirectory(data.users || []);
@@ -155,7 +153,7 @@ function SecureChatPage() {
 
   const loadMessages = async (room) => {
     if (!room) return;
-    const { data } = await axios.get(`${API}/secure-chat/messages/${room._id}`, {
+    const { data } = await axios.get(apiUrl(`/secure-chat/messages/${room._id}`), {
       withCredentials: true
     });
 
@@ -180,7 +178,7 @@ function SecureChatPage() {
     let intervalRef;
     (async () => {
       try {
-        const meRes = await axios.get(`${API}/auth/me`, { withCredentials: true });
+        const meRes = await axios.get(apiUrl("/auth/me"), { withCredentials: true });
         setMe(meRes.data.user);
         await setupKeys(meRes.data.user);
       } catch (e) {
@@ -218,7 +216,7 @@ function SecureChatPage() {
   const startChat = async (otherUser) => {
     try {
       const { data } = await axios.post(
-        `${API}/secure-chat/rooms`,
+        apiUrl("/secure-chat/rooms"),
         { otherUserId: otherUser._id },
         { withCredentials: true }
       );
@@ -265,7 +263,7 @@ function SecureChatPage() {
       const encryptedForPatient = await encryptText(draft.trim(), patientPublic);
 
       await axios.post(
-        `${API}/secure-chat/messages`,
+        apiUrl("/secure-chat/messages"),
         {
           roomId: activeRoom._id,
           encryptedForDoctor,
