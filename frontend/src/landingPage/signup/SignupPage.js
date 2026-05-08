@@ -97,28 +97,32 @@ function SignupPage() {
                 );
 
                 if (data.success) {
-                    
-                    // store login status
-                    localStorage.setItem("isLoggedIn", "true");
-                    localStorage.setItem("userName", formData.fullName);
-                    
-                    setIsSubmitted(true);
 
-                    // clear form
-                    setFormData({
-                        fullName: "",
-                        email: "",
-                        password: "",
-                        confirmPassword: "",
-                        role: "student",
-                        agreeTerms: false
-                    });
+                // store login status
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userName", data.user.fullName);
+                localStorage.setItem("userId", data.user._id);
+                localStorage.setItem("userRole", data.user.role);
 
-                    // redirect to login
-                    setTimeout(() => {
-                        window.location.href = "/";
-                    }, 5000);
-                }
+                console.log("Stored User ID:", data.user._id);
+
+                setIsSubmitted(true);
+
+                // clear form
+                setFormData({
+                    fullName: "",
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                    role: "student",
+                    agreeTerms: false
+                });
+
+                // redirect to login
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 5000);
+            }
 
             } catch (error) {
 
