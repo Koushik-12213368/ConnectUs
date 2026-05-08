@@ -21,6 +21,10 @@ function DoctorVerificationPage() {
   const statusKey = user?.doctorVerificationStatus || "not_submitted";
   const status = STATUS_META[statusKey] || STATUS_META.not_submitted;
 
+  const redirectToLogin = () => {
+    window.location.href = "/login";
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -29,7 +33,13 @@ function DoctorVerificationPage() {
         });
         setUser(data.user);
       } catch (e) {
-        setError("Please login first.");
+        const status = e.response?.status;
+        if (status === 401) {
+          setError("Please login first.");
+          redirectToLogin();
+          return;
+        }
+        setError("Failed to load user information.");
       }
     })();
   }, []);
@@ -43,7 +53,13 @@ function DoctorVerificationPage() {
         });
         setVerification(data.verification || null);
       } catch (e) {
-        // ignore
+        const status = e.response?.status;
+        if (status === 401) {
+          setError("Please login first.");
+          redirectToLogin();
+          return;
+        }
+        // ignore other errors for verification fetch
       }
     })();
   }, [user]);
@@ -94,7 +110,18 @@ function DoctorVerificationPage() {
       setSuccess("Documents uploaded successfully. Status is now pending.");
       setFiles([]);
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to upload documents.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Please login first.");
+        redirectToLogin();
+        return;
+      }
+      if (status === 403) {
+        setError(message || "Access denied.");
+        return;
+      }
+      setError(message || "Failed to upload documents.");
     } finally {
       setLoading(false);
     }
