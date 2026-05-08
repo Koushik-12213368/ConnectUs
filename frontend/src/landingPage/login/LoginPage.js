@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { apiUrl } from "../../config";
 
 function Login() {
     const [loginType, setLoginType] = useState("user");
@@ -48,7 +49,7 @@ function Login() {
                 setIsLoading(true);
                 try {
                     const { data } = await axios.post(
-                        "http://localhost:8080/auth/login",
+                        apiUrl("/auth/login"),
                         {
                             email: formData.email,
                             password: formData.password,

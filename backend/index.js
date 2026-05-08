@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 const url = process.env.MONGO_URL;
+const PORT = process.env.PORT || 8080;
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
 const AuthRoute = require("./routes/AuthRoute");
 const AssesmentRoute = require("./routes/AssesmentRoute");
 const ReviewRoute =require("./routes/ReviewRoute");
@@ -20,7 +22,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: frontendUrl,
     credentials: true,
   })
 );
@@ -50,6 +52,6 @@ mongoose.connect(url, {
 
 // Server 
 
-app.listen(8080, () => {
-    console.log("🚀 Server Started on port 8080");
+app.listen(PORT, () => {
+    console.log(`🚀 Server Started on port ${PORT}`);
 });

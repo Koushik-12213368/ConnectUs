@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Review.css"; // Create this CSS file for additional styles
+import { apiUrl } from "../../config";
 
 function Review() {
   const [reviews, setReviews] = useState([
@@ -39,7 +40,7 @@ function Review() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch("http://localhost:8080/review/all");
+        const res = await fetch(apiUrl("/review/all"));
         const data = await res.json();
         const formatted = data.map(r => ({
           id: r._id,
@@ -61,7 +62,7 @@ function Review() {
     e.preventDefault();
     if (newReview.comment.trim()) {
       try {
-        await fetch("http://localhost:8080/review/add", {
+        await fetch(apiUrl("/review/add"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

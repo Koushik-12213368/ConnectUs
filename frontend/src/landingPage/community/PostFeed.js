@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { apiUrl } from "../../config";
 
 function PostFeed() {
 
@@ -16,7 +17,7 @@ function PostFeed() {
 
       try {
 
-        const res = await fetch("http://localhost:8080/post/all");
+        const res = await fetch(apiUrl("/post/all"));
 
         const data = await res.json();
 
@@ -54,7 +55,7 @@ function PostFeed() {
 
     try {
 
-      const res = await fetch("http://localhost:8080/post/add", {
+      const res = await fetch(apiUrl("/post/add"), {
 
         method: "POST",
 
@@ -99,7 +100,7 @@ function PostFeed() {
   const handleLike = async (id) => {
 
     const res = await fetch(
-      `http://localhost:8080/post/like/${id}`,
+      apiUrl(`/post/like/${id}`),
       { method: "PUT" }
     );
 
@@ -133,7 +134,7 @@ function PostFeed() {
     if (!commentText[id]?.trim()) return;
 
     const res = await fetch(
-      `http://localhost:8080/post/comment/${id}`,
+      apiUrl(`/post/comment/${id}`),
       {
         method: "PUT",
         headers: {

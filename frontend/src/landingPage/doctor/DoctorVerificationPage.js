@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { apiUrl } from "../../config";
 
 const STATUS_META = {
   not_submitted: { label: "Not Submitted", color: "secondary", progress: 20 },
@@ -23,7 +24,7 @@ function DoctorVerificationPage() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get("http://localhost:8080/auth/me", {
+        const { data } = await axios.get(apiUrl("/auth/me"), {
           withCredentials: true
         });
         setUser(data.user);
@@ -37,7 +38,7 @@ function DoctorVerificationPage() {
     if (!user) return;
     (async () => {
       try {
-        const { data } = await axios.get("http://localhost:8080/doctor-verification/my", {
+        const { data } = await axios.get(apiUrl("/doctor-verification/my"), {
           withCredentials: true
         });
         setVerification(data.verification || null);
@@ -72,7 +73,7 @@ function DoctorVerificationPage() {
       setLoading(true);
       const docs = await Promise.all(files.map((file) => fileToDataUrl(file)));
       const { data } = await axios.post(
-        "http://localhost:8080/doctor-verification/submit",
+        apiUrl("/doctor-verification/submit"),
         { documents: docs },
         { withCredentials: true }
       );

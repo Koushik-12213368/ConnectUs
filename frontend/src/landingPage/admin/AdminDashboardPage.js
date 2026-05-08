@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { apiUrl } from "../../config";
 
 function AdminDashboardPage() {
   const [items, setItems] = useState([]);
@@ -9,7 +10,7 @@ function AdminDashboardPage() {
 
   const loadItems = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8080/doctor-verification/admin/list", {
+      const { data } = await axios.get(apiUrl("/doctor-verification/admin/list"), {
         withCredentials: true
       });
       setItems(data.items || []);
@@ -26,7 +27,7 @@ function AdminDashboardPage() {
     try {
       setLoadingId(id + status);
       await axios.patch(
-        `http://localhost:8080/doctor-verification/admin/${id}/review`,
+        apiUrl(`/doctor-verification/admin/${id}/review`),
         {
           status,
           adminNotes: notesById[id] || ""

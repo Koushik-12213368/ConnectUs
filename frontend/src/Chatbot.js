@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./Chatbot.css";
+import { apiUrl } from "./config";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
@@ -25,7 +26,7 @@ const Chatbot = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8080/chat", {
+      const res = await axios.post(apiUrl("/chat"), {
         message: text,
         history: newMessages,
       });

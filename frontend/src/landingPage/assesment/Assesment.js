@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { apiUrl } from "../../config";
 
 
 function Assessment() {
@@ -167,7 +168,7 @@ function Assessment() {
 
     try {
 
-      await axios.post("http://localhost:8080/assesment/save", {
+      await axios.post(apiUrl("/assesment/save"), {
         userId: localStorage.getItem("userId"),
         answers: answers,
         totalScore: totalScore,

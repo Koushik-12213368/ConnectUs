@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { apiUrl } from "../../config";
 
 function Dashboard() {
   const [showHistory, setShowHistory] = useState(false);
@@ -41,7 +42,7 @@ function Dashboard() {
         console.log("Fetching assessments for user:", userId);
 
         const response = await fetch(
-          `http://localhost:8080/assesment/history/${userId}`
+          apiUrl(`/assesment/history/${userId}`)
         );
 
         const data = await response.json();
