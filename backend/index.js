@@ -12,9 +12,16 @@ app.set("trust proxy", 1);
 const url = process.env.MONGO_URL;
 const PORT = process.env.PORT || 8080;
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-const allowedOrigins = frontendUrl
-  .split(",")
-  .map((url) => url.trim().replace(/\/$/, ""));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://connectus-hivh.onrender.com",
+  "https://connect-us-xi-nine.vercel.app",
+  ...frontendUrl
+    .split(",")
+    .map((url) => url.trim().replace(/\/$/, ""))
+    .filter(Boolean)
+];
 const AuthRoute = require("./routes/AuthRoute");
 const AssesmentRoute = require("./routes/AssesmentRoute");
 const ReviewRoute =require("./routes/ReviewRoute");
@@ -28,11 +35,26 @@ app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://connect-us-xi-nine.vercel.app",
-  credentials: true
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error("CORS policy does not allow access from this origin."));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.options(/.*/, cors());
+app.options("*", cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error("CORS policy does not allow access from this origin."));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 // Routes: 
 

@@ -45,10 +45,19 @@ function AdminDashboardPage() {
   };
 
   useEffect(() => {
+    if (!token) {
+      setError("Please login as admin to access the dashboard.");
+      return;
+    }
+
+    const role = localStorage.getItem("userRole");
+    if (role !== "admin") {
+      setError("Admin access required to view this page.");
+      return;
+    }
 
     loadItems();
-
-  }, []);
+  }, [token]);
 
   const review = async (id, status) => {
 
