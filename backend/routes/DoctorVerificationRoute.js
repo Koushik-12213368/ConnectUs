@@ -97,8 +97,7 @@ router.get("/admin/list", requireAuth, requireAdmin, async (req, res) => {
         }
 
         return {
-          _id: doctor._id,
-          doctorId: doctor,
+          _id: doctor._id,          doctorId: doctor,
           documents: [],
           status: doctor.doctorVerificationStatus || "not_submitted",
           adminNotes: "",

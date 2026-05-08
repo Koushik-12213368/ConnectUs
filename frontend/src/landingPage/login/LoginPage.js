@@ -70,8 +70,9 @@ function Login() {
                             "doctorVerificationStatus",
                             data.user.doctorVerificationStatus || "not_required"
                         );
-                         console.log("Stored User ID:", data.user._id);
-                         
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                        console.log("Stored User ID:", data.user._id);
+                        
                         alert("Login successful!");
 
                         const isDoctor =

@@ -85,6 +85,10 @@ function SecureChatPage() {
 
   const isAdmin = useMemo(() => me?.role === "admin", [me]);
 
+  const redirectToLogin = () => {
+    window.location.href = "/login";
+  };
+
   const chatDirectoryLabel = useMemo(() => {
     if (!me) return "Users";
     if (me.role === "admin") return "Doctors";
@@ -99,7 +103,18 @@ function SecureChatPage() {
       setRooms(data.rooms || []);
       return data.rooms || [];
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to fetch rooms.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Please login first to access secure chat.");
+        redirectToLogin();
+        return [];
+      }
+      if (status === 403) {
+        setError(message || "Access denied for secure chat.");
+        return [];
+      }
+      setError(message || "Failed to fetch rooms.");
       return [];
     }
   };
@@ -111,6 +126,9 @@ function SecureChatPage() {
     if (existing) {
       const imported = await importPrivateKey(existing);
       setPrivateKey(imported);
+      if (user.encryptionPublicKey) {
+        setMe((prev) => ({ ...prev, encryptionPublicKey: user.encryptionPublicKey }));
+      }
       return;
     }
 
@@ -136,6 +154,7 @@ function SecureChatPage() {
     );
 
     setPrivateKey(pair.privateKey);
+    setMe((prev) => ({ ...prev, encryptionPublicKey: pub }));
   };
 
   const fetchUsers = async (isDoctor) => {
@@ -146,7 +165,20 @@ function SecureChatPage() {
       });
       setDirectory(data.users || []);
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to fetch users.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Please login first to access secure chat.");
+        redirectToLogin();
+        setDirectory([]);
+        return;
+      }
+      if (status === 403) {
+        setError(message || "Access denied for secure chat.");
+        setDirectory([]);
+        return;
+      }
+      setError(message || "Failed to fetch users.");
       setDirectory([]);
     }
   };
@@ -241,7 +273,14 @@ function SecureChatPage() {
       const room = roomsData.find((r) => r._id === data.room._id) || data.room;
       setActiveRoom(room);
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to create chat room.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Please login first to access secure chat.");
+        redirectToLogin();
+        return;
+      }
+      setError(message || "Failed to create chat room.");
     }
   };
 
@@ -292,7 +331,14 @@ function SecureChatPage() {
       setDraft("");
       await loadMessages(activeRoom);
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to send encrypted message.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Please login first to access secure chat.");
+        redirectToLogin();
+        return;
+      }
+      setError(message || "Failed to send encrypted message.");
     } finally {
       setLoading(false);
     }

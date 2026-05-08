@@ -1,8 +1,10 @@
-  import React from 'react';
-  import ReactDOM from 'react-dom/client';
-  import {BrowserRouter, Routes, Route} from 'react-router-dom';
-  import './index.css';
-  import Navbar from './landingPage/Navbar';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import axios from 'axios';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import './index.css';
+import { API_BASE_URL } from './config';
+import Navbar from './landingPage/Navbar';
   import HomePage from './landingPage/home/HomePage';
   import Footer from './landingPage/Footer';
   import ResourcePage from './landingPage/resources/ResourcePage';
@@ -34,6 +36,9 @@
  import Terms from "./landingPage/links/Terms";
  import Contact from "./landingPage/links/Contact";
 
+
+axios.defaults.baseURL = API_BASE_URL;
+axios.defaults.withCredentials = true;
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(

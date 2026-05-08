@@ -9,6 +9,10 @@ function AdminDashboardPage() {
   const [notesById, setNotesById] = useState({});
   const [loadingId, setLoadingId] = useState("");
 
+  const redirectToLogin = () => {
+    window.location.href = "/login";
+  };
+
   const loadItems = async () => {
     try {
       setError("");
@@ -18,7 +22,18 @@ function AdminDashboardPage() {
       });
       setItems(data.items || []);
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to load verification submissions.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Session expired. Please log in again as an admin.");
+        redirectToLogin();
+        return;
+      }
+      if (status === 403) {
+        setError(message || "Admin access required.");
+        return;
+      }
+      setError(message || "Failed to load verification submissions.");
     }
   };
 
@@ -42,7 +57,18 @@ function AdminDashboardPage() {
       setSuccess(`Doctor has been ${status === "approved" ? "approved" : "rejected"}.`);
       await loadItems();
     } catch (e) {
-      setError(e.response?.data?.message || "Failed to update status.");
+      const status = e.response?.status;
+      const message = e.response?.data?.message;
+      if (status === 401) {
+        setError("Session expired. Please log in again as an admin.");
+        redirectToLogin();
+        return;
+      }
+      if (status === 403) {
+        setError(message || "Admin access required.");
+        return;
+      }
+      setError(message || "Failed to update status.");
     } finally {
       setLoadingId("");
     }

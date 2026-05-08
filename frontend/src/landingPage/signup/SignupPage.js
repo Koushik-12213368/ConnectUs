@@ -103,6 +103,7 @@ function SignupPage() {
                 localStorage.setItem("userName", data.user.fullName);
                 localStorage.setItem("userId", data.user._id);
                 localStorage.setItem("userRole", data.user.role);
+                localStorage.setItem("user", JSON.stringify(data.user));
 
                 console.log("Stored User ID:", data.user._id);
 
