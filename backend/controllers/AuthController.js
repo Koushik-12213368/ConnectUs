@@ -32,12 +32,13 @@ module.exports.Signup = async (req, res) => {
 
     // create JWT token
     const token = createSecretToken(user._id);
-
-    res.cookie("token", token, {
+    const cookieOptions = {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax"
-    });
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    };
+
+    res.cookie("token", token, cookieOptions);
 
     const { password: _, ...safeUser } = user._doc;
 
@@ -95,12 +96,13 @@ module.exports.Login = async (req, res) => {
 
     // create token
     const token = createSecretToken(user._id);
-
-    res.cookie("token", token, {
+    const cookieOptions = {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax"
-    });
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    };
+
+    res.cookie("token", token, cookieOptions);
 
     const { password: _, ...safeUser } = user._doc;
 
