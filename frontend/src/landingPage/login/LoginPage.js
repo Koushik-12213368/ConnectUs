@@ -3,7 +3,9 @@ import axios from "axios";
 import { apiUrl } from "../../config";
 
 function Login() {
+
     const [loginType, setLoginType] = useState("user");
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -14,90 +16,226 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // =========================
+    // HANDLE CHANGE
+    // =========================
+
     const handleChange = (e) => {
+
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
+
+        setFormData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value
+            [name]: type === "checkbox"
+                ? checked
+                : value
         }));
-        
+
         if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: "" }));
+
+            setErrors((prev) => ({
+                ...prev,
+                [name]: ""
+            }));
+
         }
+
     };
 
+    // =========================
+    // VALIDATE FORM
+    // =========================
+
     const validateForm = () => {
+
         const newErrors = {};
 
         if (!formData.email) {
+
             newErrors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+
+        } else if (
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+        ) {
+
             newErrors.email = "Please enter a valid email";
+
         }
 
         if (!formData.password) {
+
             newErrors.password = "Password is required";
+
         }
 
         return newErrors;
+
     };
 
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            const newErrors = validateForm();
-            if (Object.keys(newErrors).length === 0) {
-                setIsLoading(true);
-                try {
-                    const { data } = await axios.post(
-                        apiUrl("/auth/login"),
-                        {
-                            email: formData.email,
-                            password: formData.password,
-                            loginAsDoctor: loginType === "doctor",
-                            loginAsAdmin: loginType === "admin"
-                        },
-                        {
-                            withCredentials: true
-                        }
-                    );
-                    if (data.success) {
+    // =========================
+    // LOGIN SUBMIT
+    // =========================
 
-                        localStorage.setItem("isLoggedIn", "true");
-                        localStorage.setItem("userName", data.user.fullName);
-                        localStorage.setItem("userId", data.user._id); 
-                        localStorage.setItem("userRole", data.user.role);
-                        localStorage.setItem("token", data.token);
-                        localStorage.setItem(
-                            "doctorVerificationStatus",
-                            data.user.doctorVerificationStatus || "not_required"
-                        );
-                        localStorage.setItem("user", JSON.stringify(data.user));
-                        console.log("Stored User ID:", data.user._id);
-                        
-                        alert("Login successful!");
+    const handleSubmit = async (e) => {
 
-                        const isDoctor =
-                            data.user.role === "doctor" || data.user.role === "professional";
-                        const doctorStatus = data.user.doctorVerificationStatus;
-                        const isAdmin = data.user.role === "admin";
+        e.preventDefault();
 
-                        if (isAdmin) {
-                            window.location.href = "/admin-dashboard";
-                        } else if (isDoctor && doctorStatus !== "approved") {
-                            window.location.href = "/doctor-verification";
-                        } else {
-                            window.location.href = "/dashboard";
-                        }
+        const newErrors = validateForm();
+
+        if (Object.keys(newErrors).length === 0) {
+
+            setIsLoading(true);
+
+            try {
+
+                const { data } = await axios.post(
+                    apiUrl("/auth/login"),
+                    {
+                        email: formData.email,
+                        password: formData.password,
+                        loginAsDoctor: loginType === "doctor",
+                        loginAsAdmin: loginType === "admin"
                     }
-                } catch (error) {
-                    alert(error.response?.data?.message || "Login failed");
-                } finally {
-                    setIsLoading(false);
+                );
+
+                console.log("LOGIN RESPONSE:", data);
+
+                if (data.success) {
+
+                    // =========================
+                    // STORE TOKEN
+                    // =========================
+
+                    localStorage.setItem(
+                        "token",
+                        data.token
+                    );
+
+                    // =========================
+                    // STORE USER DATA
+                    // =========================
+
+                    localStorage.setItem(
+                        "isLoggedIn",
+                        "true"
+                    );
+
+                    localStorage.setItem(
+                        "userName",
+                        data.user.fullName
+                    );
+
+                    localStorage.setItem(
+                        "userId",
+                        data.user._id
+                    );
+
+                    localStorage.setItem(
+                        "userRole",
+                        data.user.role
+                    );
+
+                    localStorage.setItem(
+                        "doctorVerificationStatus",
+                        data.user.doctorVerificationStatus ||
+                        "not_required"
+                    );
+
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(data.user)
+                    );
+
+                    // =========================
+                    // DEBUG
+                    // =========================
+
+                    console.log(
+                        "TOKEN STORED:",
+                        data.token
+                    );
+
+                    console.log(
+                        "TOKEN FROM STORAGE:",
+                        localStorage.getItem("token")
+                    );
+
+                    console.log(
+                        "Stored User ID:",
+                        data.user._id
+                    );
+
+                    alert("Login successful!");
+
+                    // =========================
+                    // ROLE CHECK
+                    // =========================
+
+                    const isDoctor =
+                        data.user.role === "doctor" ||
+                        data.user.role === "professional";
+
+                    const doctorStatus =
+                        data.user.doctorVerificationStatus;
+
+                    const isAdmin =
+                        data.user.role === "admin";
+
+                    // =========================
+                    // REDIRECT
+                    // =========================
+
+                    if (isAdmin) {
+
+                        window.location.href =
+                            "/admin-dashboard";
+
+                    } else if (
+                        isDoctor &&
+                        doctorStatus !== "approved"
+                    ) {
+
+                        window.location.href =
+                            "/doctor-verification";
+
+                    } else {
+
+                        window.location.href =
+                            "/dashboard";
+
+                    }
+
                 }
-            } else {
-                setErrors(newErrors);
+
+            } catch (error) {
+
+                console.log(
+                    "LOGIN ERROR:",
+                    error
+                );
+
+                alert(
+                    error.response?.data?.message ||
+                    "Login failed"
+                );
+
+            } finally {
+
+                setIsLoading(false);
+
             }
-        };
+
+        } else {
+
+            setErrors(newErrors);
+
+        }
+
+    };
+
+    // =========================
+    // INPUT STYLE
+    // =========================
 
     const inputStyle = {
         background: "rgba(255, 255, 255, 0.15)",
@@ -109,107 +247,147 @@ function Login() {
     };
 
     return (
-        <div style={{
-            backgroundImage: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            minHeight: "100vh",
-            fontFamily: "'Inter', sans-serif"
-        }}>
+
+        <div
+            style={{
+                backgroundImage:
+                    "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                minHeight: "100vh",
+                fontFamily: "'Inter', sans-serif"
+            }}
+        >
+
             <div className="container">
+
                 <div className="row justify-content-center align-items-center min-vh-100">
+
                     <div className="col-md-5 col-lg-4 col-xl-4">
-                        {/* Login Card */}
-                        <div className="card border-0 p-4" style={{
-                            background: "rgba(255, 255, 255, 0.1)",
-                            backdropFilter: "blur(20px)",
-                            border: "1px solid rgba(255, 255, 255, 0.2)",
-                            boxShadow: "0 8px 32px 0 rgba(0,0,0,0.2)",
-                            borderRadius: "24px"
-                        }}>
+
+                        <div
+                            className="card border-0 p-4"
+                            style={{
+                                background:
+                                    "rgba(255, 255, 255, 0.1)",
+                                backdropFilter: "blur(20px)",
+                                border:
+                                    "1px solid rgba(255, 255, 255, 0.2)",
+                                boxShadow:
+                                    "0 8px 32px 0 rgba(0,0,0,0.2)",
+                                borderRadius: "24px"
+                            }}
+                        >
+
                             <div className="card-body p-4">
-                                {/* Header */}
+
                                 <div className="text-center mb-4">
+
                                     <div className="mb-3">
-                                        <span style={{
-                                            fontSize: "48px",
-                                            filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))"
-                                        }}>
+
+                                        <span
+                                            style={{
+                                                fontSize: "48px"
+                                            }}
+                                        >
                                             🧠
                                         </span>
+
                                     </div>
-                                    <h2 className="fw-bold text-white mb-2">Welcome Back</h2>
-                                    <p className="text-white opacity-75">Sign in to continue your journey</p>
+
+                                    <h2 className="fw-bold text-white mb-2">
+                                        Welcome Back
+                                    </h2>
+
+                                    <p className="text-white opacity-75">
+                                        Sign in to continue your journey
+                                    </p>
+
                                 </div>
 
+                                {/* LOGIN TYPE */}
+
                                 <div className="mb-4">
+
                                     <div
                                         className="d-flex"
                                         style={{
                                             borderRadius: "999px",
                                             overflow: "hidden",
-                                            border: "1px solid rgba(255,255,255,0.25)",
-                                            background: "rgba(255,255,255,0.08)",
-                                            boxShadow: "0 18px 45px rgba(0,0,0,0.14)",
+                                            border:
+                                                "1px solid rgba(255,255,255,0.25)",
+                                            background:
+                                                "rgba(255,255,255,0.08)",
                                             padding: "4px"
                                         }}
                                     >
+
                                         {[
-                                            { key: "user", label: "User" },
-                                            { key: "doctor", label: "Doctor" },
-                                            { key: "admin", label: "Admin" }
+                                            {
+                                                key: "user",
+                                                label: "User"
+                                            },
+                                            {
+                                                key: "doctor",
+                                                label: "Doctor"
+                                            },
+                                            {
+                                                key: "admin",
+                                                label: "Admin"
+                                            }
                                         ].map((option) => {
-                                            const selected = loginType === option.key;
+
+                                            const selected =
+                                                loginType === option.key;
+
                                             return (
+
                                                 <button
                                                     key={option.key}
                                                     type="button"
-                                                    onClick={() => setLoginType(option.key)}
+                                                    onClick={() =>
+                                                        setLoginType(
+                                                            option.key
+                                                        )
+                                                    }
                                                     style={{
                                                         flex: 1,
-                                                        minWidth: 0,
-                                                        margin: 0,
                                                         borderRadius: "999px",
                                                         border: "none",
-                                                        padding: "12px 16px",
+                                                        padding:
+                                                            "12px 16px",
                                                         fontWeight: 700,
-                                                        fontSize: "0.95rem",
-                                                        color: selected ? "#ffffff" : "rgba(255,255,255,0.85)",
+                                                        color: selected
+                                                            ? "#ffffff"
+                                                            : "rgba(255,255,255,0.85)",
                                                         background: selected
                                                             ? "linear-gradient(135deg, #667eea, #764ba2)"
-                                                            : "rgba(255,255,255,0.05)",
-                                                        boxShadow: selected
-                                                            ? "0 10px 24px rgba(102,126,234,0.22)"
-                                                            : "none",
-                                                        transition: "all 0.25s ease",
-                                                        cursor: "pointer"
+                                                            : "rgba(255,255,255,0.05)"
                                                     }}
                                                 >
                                                     {option.label}
                                                 </button>
+
                                             );
+
                                         })}
+
                                     </div>
-                                    {loginType === "doctor" && (
-                                        <div className="alert alert-info mt-3 py-2 mb-0 small">
-                                            New doctors must submit certificates for admin verification after login.
-                                        </div>
-                                    )}
-                                    {loginType === "admin" && (
-                                        <div className="alert alert-secondary mt-3 py-2 mb-0 small">
-                                            Admin login allows document review and approval.
-                                        </div>
-                                    )}
+
                                 </div>
 
-                                {/* Form */}
+                                {/* FORM */}
+
                                 <form onSubmit={handleSubmit}>
-                                    {/* Email */}
+
+                                    {/* EMAIL */}
+
                                     <div className="mb-3">
-                                        <div className="d-flex align-items-center gap-2 mb-1">
-                                            <i className="fas fa-envelope text-white opacity-75 small"></i>
-                                            <label className="text-white small fw-semibold">Email</label>
-                                        </div>
+
+                                        <label className="text-white small fw-semibold mb-1">
+                                            Email
+                                        </label>
+
                                         <input
                                             type="email"
                                             name="email"
@@ -219,42 +397,31 @@ function Login() {
                                             onChange={handleChange}
                                             style={inputStyle}
                                         />
+
                                         {errors.email && (
-                                            <small className="text-danger d-block mt-1">
-                                                <i className="fas fa-exclamation-circle me-1"></i>
+                                            <small className="text-danger">
                                                 {errors.email}
                                             </small>
                                         )}
+
                                     </div>
 
-                                    {/* Password */}
+                                    {/* PASSWORD */}
+
                                     <div className="mb-3">
-                                        <div className="d-flex align-items-center justify-content-between mb-1">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <i className="fas fa-lock text-white opacity-75 small"></i>
-                                                <label className="text-white small fw-semibold">Password</label>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                className="text-white-50 small"
-                                                style={{
-                                                    background: "none",
-                                                    border: "none",
-                                                    padding: 0,
-                                                    margin: 0,
-                                                    cursor: "pointer",
-                                                textDecoration: "none",
-                                                opacity: 0.8,
-                                                transition: "opacity 0.3s"
-                                            }}
-                                            onMouseEnter={(e) => e.target.style.opacity = 1}
-                                            onMouseLeave={(e) => e.target.style.opacity = 0.8}>
-                                                Forgot?
-                                            </button>
-                                        </div>
+
+                                        <label className="text-white small fw-semibold mb-1">
+                                            Password
+                                        </label>
+
                                         <div className="position-relative">
+
                                             <input
-                                                type={showPassword ? "text" : "password"}
+                                                type={
+                                                    showPassword
+                                                        ? "text"
+                                                        : "password"
+                                                }
                                                 name="password"
                                                 className="form-control"
                                                 placeholder="••••••••"
@@ -262,92 +429,98 @@ function Login() {
                                                 onChange={handleChange}
                                                 style={inputStyle}
                                             />
+
                                             <button
                                                 type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
+                                                onClick={() =>
+                                                    setShowPassword(
+                                                        !showPassword
+                                                    )
+                                                }
                                                 style={{
                                                     position: "absolute",
                                                     right: "12px",
                                                     top: "50%",
-                                                    transform: "translateY(-50%)",
+                                                    transform:
+                                                        "translateY(-50%)",
                                                     background: "none",
                                                     border: "none",
-                                                    color: "rgba(255,255,255,0.6)",
-                                                    cursor: "pointer",
-                                                    padding: "8px"
+                                                    color:
+                                                        "rgba(255,255,255,0.6)"
                                                 }}
                                             >
-                                                <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                                                <i
+                                                    className={`fas ${
+                                                        showPassword
+                                                            ? "fa-eye-slash"
+                                                            : "fa-eye"
+                                                    }`}
+                                                ></i>
                                             </button>
+
                                         </div>
+
                                         {errors.password && (
-                                            <small className="text-danger d-block mt-1">
-                                                <i className="fas fa-exclamation-circle me-1"></i>
+                                            <small className="text-danger">
                                                 {errors.password}
                                             </small>
                                         )}
+
                                     </div>
 
-                                    {/* Sign In Button */}
-                                    <button 
-                                        type="submit" 
-                                        className="btn w-100 py-3 mb-3 fw-semibold d-flex align-items-center justify-content-center gap-2"
+                                    {/* BUTTON */}
+
+                                    <button
+                                        type="submit"
+                                        className="btn w-100 py-3 mb-3 fw-semibold"
                                         disabled={isLoading}
                                         style={{
-                                            background: "linear-gradient(45deg, #667eea, #764ba2)",
+                                            background:
+                                                "linear-gradient(45deg, #667eea, #764ba2)",
                                             color: "white",
                                             border: "none",
-                                            borderRadius: "10px",
-                                            transition: "all 0.3s",
-                                            opacity: isLoading ? 0.8 : 1
+                                            borderRadius: "10px"
                                         }}
-                                        onMouseEnter={(e) => !isLoading && (e.target.style.transform = "translateY(-2px)")}
-                                        onMouseLeave={(e) => !isLoading && (e.target.style.transform = "translateY(0)")}
                                     >
-                                        {isLoading ? (
-                                            <>
-                                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                                Signing in...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="fas fa-sign-in-alt"></i>
-                                                Sign In
-                                            </>
-                                        )}
+
+                                        {isLoading
+                                            ? "Signing in..."
+                                            : "Sign In"}
+
                                     </button>
 
-                                    
+                                    {/* SIGNUP */}
 
-                                    {/* Sign Up Link */}
                                     <div className="text-center mt-4">
-                                        <span className="text-white opacity-75">New to our community? </span>
-                                        <a href="/signup" className="text-white fw-semibold" style={{ 
-                                            textDecoration: "none",
-                                            borderBottom: "2px solid rgba(255,255,255,0.5)",
-                                            paddingBottom: "2px",
-                                            transition: "border-color 0.3s"
-                                        }}
-                                        onMouseEnter={(e) => e.target.style.borderBottomColor = "white"}
-                                        onMouseLeave={(e) => e.target.style.borderBottomColor = "rgba(255,255,255,0.5)"}>
+
+                                        <span className="text-white opacity-75">
+                                            New to our community?
+                                        </span>
+
+                                        <a
+                                            href="/signup"
+                                            className="text-white fw-semibold ms-1"
+                                        >
                                             Create account
                                         </a>
+
                                     </div>
+
                                 </form>
+
                             </div>
+
                         </div>
 
-                        {/* Footer Note */}
-                        <div className="text-center mt-4">
-                            <p className="text-white-50 small mb-0" style={{ opacity: 0.7 }}>
-                                By signing in, you agree to our Terms and Privacy Policy
-                            </p>
-                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    );
-}
 
+                </div>
+
+            </div>
+
+        </div>
+
+    );
+
+}
 export default Login;
