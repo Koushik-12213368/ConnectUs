@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { apiUrl } from "../../config";
 
 function Dashboard() {
@@ -6,18 +7,24 @@ function Dashboard() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [assessments, setAssessments] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
+  const [doctorVerificationStatus, setDoctorVerificationStatus] = useState(
+    localStorage.getItem("doctorVerificationStatus") || ""
+  );
+
   const [userDetails, setUserDetails] = useState({
     name: localStorage.getItem("userName") || "Guest User",
     email: localStorage.getItem("userEmail") || "user@example.com",
     phone: localStorage.getItem("userPhone") || "Not provided",
     age: localStorage.getItem("userAge") || "",
     gender: localStorage.getItem("userGender") || "",
-    avatar: localStorage.getItem("userAvatar") || "https://ui-avatars.com/api/?name=" + encodeURIComponent(localStorage.getItem("userName") || "Guest") + "&background=8B5CF6&color=fff&size=128"
+    avatar:
+      localStorage.getItem("userAvatar") ||
+      "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(localStorage.getItem("userName") || "Guest") +
+        "&background=8B5CF6&color=fff&size=128"
   });
 
-  const userRole = localStorage.getItem("userRole") || "";
-  const doctorVerificationStatus = localStorage.getItem("doctorVerificationStatus") || "";
   const isDoctor = userRole === "doctor" || userRole === "professional";
 
   const [editForm, setEditForm] = useState({ ...userDetails });
@@ -30,11 +37,36 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const { data } = await axios.get(apiUrl("/auth/me"), {
+          withCredentials: true
+        });
+        const user = data.user;
+        if (user) {
+          setUserRole(user.role || "");
+          setDoctorVerificationStatus(user.doctorVerificationStatus || "");
+          setUserDetails((prev) => ({
+            ...prev,
+            name: user.fullName || prev.name,
+            email: user.email || prev.email,
+            avatar:
+              user.fullName &&
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=8B5CF6&color=fff&size=128`
+          }));
+          localStorage.setItem("userRole", user.role || "");
+          localStorage.setItem(
+            "doctorVerificationStatus",
+            user.doctorVerificationStatus || ""
+          );
+        }
+      } catch (error) {
+        console.warn("Unable to load current user", error);
+      }
+    };
 
     const fetchAssessments = async () => {
-
       try {
-
         const userId = localStorage.getItem("userId");
 
         if (!userId) {
@@ -45,10 +77,7 @@ function Dashboard() {
 
         console.log("Fetching assessments for user:", userId);
 
-        const response = await fetch(
-          apiUrl(`/assesment/history/${userId}`)
-        );
-
+        const response = await fetch(apiUrl(`/assesment/history/${userId}`));
         const data = await response.json();
 
         console.log("Assessments from DB:", data);
@@ -63,7 +92,7 @@ function Dashboard() {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
 
-        const formatted = sorted.map(a => ({
+        const formatted = sorted.map((a) => ({
           date: new Date(a.createdAt).toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
@@ -74,21 +103,15 @@ function Dashboard() {
         }));
 
         setAssessments(formatted);
-
       } catch (error) {
-
         console.error("Error fetching assessments:", error);
-
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
+    loadUser();
     fetchAssessments();
-
   }, []);
 
   const handleEditChange = (e) => {
