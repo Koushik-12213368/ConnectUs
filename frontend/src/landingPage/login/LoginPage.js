@@ -66,6 +66,7 @@ function Login() {
                         localStorage.setItem("userName", data.user.fullName);
                         localStorage.setItem("userId", data.user._id); 
                         localStorage.setItem("userRole", data.user.role);
+                        localStorage.setItem("token", data.token);
                         localStorage.setItem(
                             "doctorVerificationStatus",
                             data.user.doctorVerificationStatus || "not_required"

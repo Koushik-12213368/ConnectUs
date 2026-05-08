@@ -47,6 +47,7 @@ module.exports.Signup = async (req, res) => {
     res.status(201).json({
       message: "User signed up successfully",
       success: true,
+      token,
       user: safeUser
     });
 
@@ -113,8 +114,9 @@ module.exports.Login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       success: true,
+      token,
       user: safeUser
-    });
+    }); 
 
   } catch (error) {
     console.error(error);
