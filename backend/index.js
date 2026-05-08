@@ -11,6 +11,9 @@ const app = express();
 const url = process.env.MONGO_URL;
 const PORT = process.env.PORT || 8080;
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+const allowedOrigins = frontendUrl
+  .split(",")
+  .map((url) => url.trim().replace(/\/$/, ""));
 const AuthRoute = require("./routes/AuthRoute");
 const AssesmentRoute = require("./routes/AssesmentRoute");
 const ReviewRoute =require("./routes/ReviewRoute");
@@ -23,12 +26,14 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: frontendUrl,
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "https://connect-us-xi-nine.vercel.app"
+  ],
+  credentials: true
+}));
+
+app.options("*", cors());
 
 // Routes: 
 
