@@ -66,8 +66,7 @@ function Login() {
             );
 
             if (data.success) {
-                // ✅ Store all data first, THEN redirect
-                localStorage.setItem("token", data.token);
+                localStorage.setItem("token", data.token);        
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("userName", data.user.fullName);
                 localStorage.setItem("userId", data.user._id);
@@ -78,16 +77,14 @@ function Login() {
                 );
                 localStorage.setItem("user", JSON.stringify(data.user));
 
-                // ✅ Redirect AFTER all storage is done, no alert()
-                const isAdmin = data.user.role === "admin";
-                const isDoctor =
-                    data.user.role === "doctor" ||
-                    data.user.role === "professional";
-                const doctorStatus = data.user.doctorVerificationStatus;
-
-                if (isAdmin) {
+                // NO alert() here
+                // Navigate immediately after
+                if (data.user.role === "admin") {
                     navigate("/admin-dashboard");
-                } else if (isDoctor && doctorStatus !== "approved") {
+                } else if (
+                    (data.user.role === "doctor" || data.user.role === "professional") &&
+                    data.user.doctorVerificationStatus !== "approved"
+                ) {
                     navigate("/doctor-verification");
                 } else {
                     navigate("/dashboard");

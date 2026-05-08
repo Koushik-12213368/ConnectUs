@@ -10,7 +10,7 @@ function AdminDashboardPage() {
   const [notesById, setNotesById] = useState({});
   const [loadingId, setLoadingId] = useState("");
 
-  // ✅ FIX: Read token inside a getter, not at module scope
+  //  FIX: Read token inside a getter, not at module scope
   const getToken = () => localStorage.getItem("token");
 
   const loadItems = async () => {
@@ -22,7 +22,7 @@ function AdminDashboardPage() {
         apiUrl("/doctor-verification/admin/list"),
         {
           headers: {
-            // ✅ FIX: Call getToken() so it's always fresh
+            //  FIX: Call getToken() so it's always fresh
             Authorization: `Bearer ${getToken()}`
           }
         }
@@ -40,7 +40,7 @@ function AdminDashboardPage() {
   };
 
   useEffect(() => {
-    // ✅ FIX: Read token inside the effect, not outside
+    //  FIX: Read token inside the effect, not outside
     const token = getToken();
 
     if (!token) {
@@ -55,7 +55,7 @@ function AdminDashboardPage() {
     }
 
     loadItems();
-  }, []); // ✅ FIX: empty deps array — runs once on mount
+  }, []); // FIX: empty deps array — runs once on mount
 
   const review = async (id, status) => {
     try {
@@ -71,7 +71,7 @@ function AdminDashboardPage() {
         },
         {
           headers: {
-            // ✅ FIX: Fresh token here too
+            //  FIX: Fresh token here too
             Authorization: `Bearer ${getToken()}`
           }
         }
