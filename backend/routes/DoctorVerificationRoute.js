@@ -5,6 +5,10 @@ const User = require("../models/UserModel");
 
 const isDoctorRole = (role) => role === "doctor" || role === "professional";
 
+// ======================================
+// SUBMIT DOCUMENTS
+// ======================================
+
 router.post("/submit", requireAuth, async (req, res) => {
   try {
     if (!isDoctorRole(req.user.role)) {
@@ -56,11 +60,16 @@ router.post("/submit", requireAuth, async (req, res) => {
       verification,
       user
     });
+
   } catch (error) {
-    console.error(error);
+    console.error("SUBMIT ERROR:", error);
     return res.status(500).json({ message: "Failed to submit documents" });
   }
 });
+
+// ======================================
+// GET MY VERIFICATION
+// ======================================
 
 router.get("/my", requireAuth, async (req, res) => {
   try {
@@ -68,36 +77,49 @@ router.get("/my", requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Only doctors can access this" });
     }
 
-    const verification = await DoctorVerification.findOne({ doctorId: req.user._id });
+    const verification = await DoctorVerification.findOne({
+      doctorId: req.user._id
+    });
+
     return res.json({ success: true, verification });
+
   } catch (error) {
+    console.error("MY VERIFICATION ERROR:", error);
     return res.status(500).json({ message: "Failed to fetch verification details" });
   }
 });
 
+// ======================================
+// ADMIN — LIST ALL
+// ======================================
+
 router.get("/admin/list", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const doctors = await User.find({ role: { $in: ["doctor", "professional"] } })
-      .select("_id fullName email role doctorVerificationStatus updatedAt createdAt");
+    const doctors = await User.find({
+      role: { $in: ["doctor", "professional"] }
+    }).select("_id fullName email role doctorVerificationStatus updatedAt createdAt");
 
-    const doctorIds = doctors.map((doctor) => doctor._id);
-    const verifications = await DoctorVerification.find({ doctorId: { $in: doctorIds } })
+    const doctorIds = doctors.map((d) => d._id);
+
+    const verifications = await DoctorVerification.find({
+      doctorId: { $in: doctorIds }
+    })
       .populate("doctorId", "_id fullName email role doctorVerificationStatus")
       .populate("reviewedBy", "_id fullName email");
 
     const verificationMap = new Map(
-      verifications.map((verification) => [verification.doctorId._id.toString(), verification])
+      verifications.map((v) => [v.doctorId._id.toString(), v])
     );
 
     const items = doctors
       .map((doctor) => {
         const verification = verificationMap.get(doctor._id.toString());
-        if (verification) {
-          return verification;
-        }
+        if (verification) return verification;
 
+        // Doctor exists but hasn't submitted yet — return a placeholder
         return {
-          _id: doctor._id,          doctorId: doctor,
+          _id: doctor._id,
+          doctorId: doctor,
           documents: [],
           status: doctor.doctorVerificationStatus || "not_submitted",
           adminNotes: "",
@@ -108,40 +130,37 @@ router.get("/admin/list", requireAuth, requireAdmin, async (req, res) => {
       .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
     return res.json({ success: true, items });
+
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed to fetch subscriptions" });
+    console.error("ADMIN LIST ERROR:", error);
+    return res.status(500).json({ message: "Failed to fetch list" });
   }
 });
+
+// ======================================
+// ADMIN — REVIEW SUBMISSION
+// ======================================
 
 router.patch("/admin/:id/review", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { status, adminNotes } = req.body;
+
     if (!["approved", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    let item = await DoctorVerification.findById(req.params.id);
-    if (!item) {
-      const user = await User.findById(req.params.id);
-      if (!user || !isDoctorRole(user.role)) {
-        return res.status(404).json({ message: "Submission not found" });
-      }
+    // ✅ FIX: only look up by DoctorVerification._id
+    // no longer silently creates blank records for unknown IDs
+    const item = await DoctorVerification.findById(req.params.id);
 
-      item = new DoctorVerification({
-        doctorId: user._id,
-        documents: [],
-        status,
-        adminNotes: typeof adminNotes === "string" ? adminNotes : "",
-        reviewedBy: req.user._id,
-        reviewedAt: new Date()
-      });
-    } else {
-      item.status = status;
-      item.adminNotes = typeof adminNotes === "string" ? adminNotes : "";
-      item.reviewedBy = req.user._id;
-      item.reviewedAt = new Date();
+    if (!item) {
+      return res.status(404).json({ message: "Verification submission not found" });
     }
+
+    item.status = status;
+    item.adminNotes = typeof adminNotes === "string" ? adminNotes : "";
+    item.reviewedBy = req.user._id;
+    item.reviewedAt = new Date();
 
     await item.save();
 
@@ -154,11 +173,11 @@ router.patch("/admin/:id/review", requireAuth, requireAdmin, async (req, res) =>
       .populate("reviewedBy", "_id fullName email");
 
     return res.json({ success: true, item: updated });
+
   } catch (error) {
-    console.error(error);
+    console.error("REVIEW ERROR:", error);
     return res.status(500).json({ message: "Failed to review submission" });
   }
 });
 
 module.exports = router;
-

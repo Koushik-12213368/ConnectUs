@@ -5,6 +5,7 @@ const {
   UpdatePublicKey,
   RequestDoctorVerification
 } = require("../controllers/AuthController");
+
 const router = require("express").Router();
 const { requireAuth } = require("../middleware/AuthMiddleware");
 

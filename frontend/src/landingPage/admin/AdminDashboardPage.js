@@ -10,13 +10,11 @@ function AdminDashboardPage() {
   const [notesById, setNotesById] = useState({});
   const [loadingId, setLoadingId] = useState("");
 
-  // GET TOKEN
-  const token = localStorage.getItem("token");
+  // ✅ FIX: Read token inside a getter, not at module scope
+  const getToken = () => localStorage.getItem("token");
 
   const loadItems = async () => {
-
     try {
-
       setError("");
       setSuccess("");
 
@@ -24,7 +22,8 @@ function AdminDashboardPage() {
         apiUrl("/doctor-verification/admin/list"),
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            // ✅ FIX: Call getToken() so it's always fresh
+            Authorization: `Bearer ${getToken()}`
           }
         }
       );
@@ -32,19 +31,18 @@ function AdminDashboardPage() {
       setItems(data.items || []);
 
     } catch (e) {
-
       console.log("LOAD ERROR:", e);
-
       setError(
         e.response?.data?.message ||
         "Failed to load verification submissions."
       );
-
     }
-
   };
 
   useEffect(() => {
+    // ✅ FIX: Read token inside the effect, not outside
+    const token = getToken();
+
     if (!token) {
       setError("Please login as admin to access the dashboard.");
       return;
@@ -57,12 +55,10 @@ function AdminDashboardPage() {
     }
 
     loadItems();
-  }, [token]);
+  }, []); // ✅ FIX: empty deps array — runs once on mount
 
   const review = async (id, status) => {
-
     try {
-
       setError("");
       setSuccess("");
       setLoadingId(id + status);
@@ -75,36 +71,27 @@ function AdminDashboardPage() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            // ✅ FIX: Fresh token here too
+            Authorization: `Bearer ${getToken()}`
           }
         }
       );
 
       setSuccess(
-        `Doctor has been ${
-          status === "approved"
-            ? "approved"
-            : "rejected"
-        }.`
+        `Doctor has been ${status === "approved" ? "approved" : "rejected"}.`
       );
 
       await loadItems();
 
     } catch (e) {
-
       console.log("REVIEW ERROR:", e);
-
       setError(
         e.response?.data?.message ||
         "Failed to update status."
       );
-
     } finally {
-
       setLoadingId("");
-
     }
-
   };
 
   return (

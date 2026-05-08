@@ -147,12 +147,15 @@ module.exports.requireAuth = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized: Missing token"
+        message: "Unauthorized: No token provided"
       });
     }
 
     const token = authHeader.split(" ")[1];
+
+    // This throws if TOKEN_KEY doesn't match what was used to sign
     const payload = jwt.verify(token, process.env.TOKEN_KEY);
+
     const user = await User.findById(payload.id).select("-password");
 
     if (!user) {
@@ -164,11 +167,13 @@ module.exports.requireAuth = async (req, res, next) => {
 
     req.user = user;
     next();
+
   } catch (error) {
-    console.log("AUTH ERROR:", error);
+    // Log the actual error so you can see if it's "invalid signature" or "jwt expired"
+    console.log("AUTH MIDDLEWARE ERROR:", error.message);
     return res.status(401).json({
       success: false,
-      message: "Unauthorized: Invalid or expired token"
+      message: "Unauthorized: " + error.message
     });
   }
 };
@@ -182,18 +187,13 @@ module.exports.requireVerifiedDoctor = (req, res, next) => {
     if (isDoctor && req.user?.doctorVerificationStatus !== "approved") {
       return res.status(403).json({
         success: false,
-        message:
-          "Doctor account is not verified yet. Please wait for admin approval."
+        message: "Doctor account is not verified yet."
       });
     }
 
     next();
   } catch (error) {
-    console.log("DOCTOR VERIFY ERROR:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -205,13 +205,8 @@ module.exports.requireAdmin = (req, res, next) => {
         message: "Admin access required"
       });
     }
-
     next();
   } catch (error) {
-    console.log("ADMIN AUTH ERROR:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
