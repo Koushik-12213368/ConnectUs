@@ -19,18 +19,24 @@
   import SleepHygiene from './landingPage/resourcecontent/SleepHygine';
   import MindFull from './landingPage/resourcecontent/MindFull';
   import TimeManagement from './landingPage/resourcecontent/TimeManagment';
-  import DailyMindfulness from './landingPage/resourcecontent/DailyMindFulness';
-  import ActiveRecall from './landingPage/resourcecontent/ActiveRecall';
-  import ResumeWritingMasterclass from './landingPage/resourcecontent/ResumeWritting';
-  import ExamAnxietyCopingKit from './landingPage/resourcecontent/ExamAnxietyCopingKit';
-  import Dashboard from './landingPage/dashboard/Dashboard';
-  import { AuthProvider } from "../src/context/AuthContext";
+ import DailyMindfulness from './landingPage/resourcecontent/DailyMindFulness';
+ import ActiveRecall from './landingPage/resourcecontent/ActiveRecall';
+ import ResumeWritingMasterclass from './landingPage/resourcecontent/ResumeWritting';
+ import ExamAnxietyCopingKit from './landingPage/resourcecontent/ExamAnxietyCopingKit';
+ import Dashboard from './landingPage/dashboard/Dashboard';
+ import { AuthProvider } from "../src/context/AuthContext";
+ import Chatbot from "./Chatbot";
+ import SecureChatPage from "./landingPage/securechat/SecureChatPage";
+ import DoctorVerificationPage from "./landingPage/doctor/DoctorVerificationPage";
+ import DoctorAccessGuard from "./DoctorAccessGuard";
+ import AdminDashboardPage from "./landingPage/admin/AdminDashboardPage";
 
 
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(
     <AuthProvider>
     <BrowserRouter>
+    <DoctorAccessGuard>
     <Navbar/>
       <Routes>
         <Route path = "/" element={<HomePage/>} />
@@ -53,8 +59,13 @@
         <Route path='/resumewritting' element={<ResumeWritingMasterclass/>} />
         <Route path='/examanxietycopingkit' element={<ExamAnxietyCopingKit/>}/>
         <Route path='/dashboard' element={<Dashboard/>} />
+        <Route path='/secure-chat' element={<SecureChatPage/>} />
+        <Route path='/doctor-verification' element={<DoctorVerificationPage/>} />
+        <Route path='/admin-dashboard' element={<AdminDashboardPage/>} />
       </Routes>
       <Footer/>
+      <Chatbot />
+    </DoctorAccessGuard>
     </BrowserRouter>
     </AuthProvider>
   );

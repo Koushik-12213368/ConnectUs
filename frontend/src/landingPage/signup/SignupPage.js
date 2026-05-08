@@ -330,7 +330,7 @@ function SignupPage() {
                                         </div>
 
                                         <div className="d-flex gap-3 flex-wrap">
-                                            {["student", "professional", "parent"].map((role) => (
+                                            {["student", "doctor", "parent"].map((role) => (
                                             <label
                                                 key={role}
                                                 htmlFor={role}

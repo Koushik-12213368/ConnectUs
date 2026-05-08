@@ -439,12 +439,12 @@ function ExamStress() {
            <div className="col-md-4">
                 <div className="bg-info bg-opacity-25 text-dark p-3 rounded-3 border border-info">
                     <h6 className="mb-3 text-info">📞 Crisis Support</h6>
-                    <p className="small mb-2">National Suicide Prevention Lifeline:</p>
-                    <p className="fw-bold">988</p>
-                    <p className="small mb-2">Crisis Text Line:</p>
-                    <p className="fw-bold">Text HOME to : 741741</p>
-                    <p className="fw-bold">Text CAMPUS ON : (555) 123-4567</p>
-                    <p className="small mb-0 mt-3">Your school counseling center is free and confidential.</p>
+                    <p className="small mb-2">India Emergency Response:</p>
+                    <p className="fw-bold">112</p>
+                    <p className="small mb-2">Tele-MANAS:</p>
+                    <p className="fw-bold">14416 / 1-800-891-4416</p>
+                    <p className="fw-bold">Ambulance: 108</p>
+                    <p className="small mb-0 mt-3">If you feel unsafe or overwhelmed, contact help immediately.</p>
                 </div>
             </div>
           </div>

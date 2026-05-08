@@ -326,7 +326,7 @@ function Assessment() {
                     <p className="small mb-0 text-secondary">
                       🆘 If you're in crisis, please reach out to a mental health professional immediately.
                       <br />
-                      <strong>National Helpline: 988</strong>
+                      <strong>India Emergency: 112 | Tele-MANAS: 14416</strong>
                     </p>
                   </div>
                 )}

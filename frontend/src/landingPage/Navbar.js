@@ -26,15 +26,16 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top app-navbar">
       <div className="container">
 
-        <Link className="navbar-brand d-flex align-items-center" to="/">
+        <Link className="navbar-brand d-flex align-items-center navbar-brand-wrap" to="/">
           <img
-            src="Images/logo1.png"
-            alt="MindWell"
-            style={{ width: "15%", marginRight: "10px" }}
+            src="/Images/ConnectUs.png"
+            alt="ConnectUs"
+            className="navbar-logo"
           />
+          <span className="brand-title">ConnectUs</span>
         </Link>
 
         <button
@@ -66,6 +67,10 @@ function Navbar() {
             </li>
 
             <li className="nav-item">
+              <Link className="nav-link active NavLink" to="/secure-chat">Secure Chat</Link>
+            </li>
+
+            <li className="nav-item">
               <Link className="nav-link active NavLink" to="/about" style={{ whiteSpace: "nowrap" }}>
                 About us
               </Link>
@@ -78,7 +83,7 @@ function Navbar() {
                 </li>
 
                 <li className="nav-item">
-                  <Link className="nav-link active NavLink" to="/signup">Sign Up</Link>
+                  <Link className="nav-link active NavLink nav-cta" to="/signup">Sign Up</Link>
                 </li>
               </>
             ) : (

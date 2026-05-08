@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Footer() {
     return (
-        <footer className="bg-light border-top mt-5">
+        <footer className="bg-light border-top mt-5 app-footer">
             <div className="container py-5">
                 <div className="row">
                     {/* Brand Section */}
@@ -25,18 +26,18 @@ function Footer() {
                     <div className="col-md-4 mb-4">
                         <h5 className="fw-semibold mb-3">Quick Links</h5>
                         <div className="d-flex flex-wrap gap-4 mb-4">
-                            <a href="/about" className="text-secondary text-decoration-none QuickLinks">About</a>
-                            <a href="/privacy" className="text-secondary text-decoration-none QuickLinks">Privacy</a>
-                            <a href="/terms" className="text-secondary text-decoration-none QuickLinks">Terms</a>
-                            <a href="/contact" className="text-secondary text-decoration-none QuickLinks">Contact</a>
+                            <Link to="/about" className="text-secondary text-decoration-none QuickLinks">About</Link>
+                            <a href="#!" className="text-secondary text-decoration-none QuickLinks">Privacy</a>
+                            <a href="#!" className="text-secondary text-decoration-none QuickLinks">Terms</a>
+                            <a href="#!" className="text-secondary text-decoration-none QuickLinks">Contact</a>
                         </div>
                         
                         <h5 className="fw-semibold mb-3">Follow Us</h5>
                         <div className="d-flex gap-3 fs-3 ">
-                            <i class="fa-brands fa-facebook ftrLink"></i>
-                            <i class="fa-brands fa-instagram ftrLink"></i>
-                            <i class="fa-brands fa-x-twitter ftrLink"></i>
-                            <i class="fa-brands fa-youtube ftrLink"></i>
+                            <i className="fa-brands fa-facebook ftrLink"></i>
+                            <i className="fa-brands fa-instagram ftrLink"></i>
+                            <i className="fa-brands fa-x-twitter ftrLink"></i>
+                            <i className="fa-brands fa-youtube ftrLink"></i>
                         </div>
                     </div>
 
@@ -45,17 +46,17 @@ function Footer() {
                         <h5 className="fw-semibold mb-3">Crisis Support</h5>
                         <div className="bg-white p-4 rounded-3 border">
                             <p className="mb-2">
-                                <span className="fw-bold">Emergency: </span> 
-                                <span className="fw-bold">988</span> 
+                                <span className="fw-bold">Emergency (India): </span> 
+                                <span className="fw-bold">112</span> 
                                 <span className="text-secondary ms-2">(24/7)</span>
                             </p>
                             <p className="mb-2">
-                                <span className="fw-bold">Campus:</span> 
-                                <span className="text-secondary ms-2">(555) 123-4567</span>
+                                <span className="fw-bold">Tele-MANAS:</span> 
+                                <span className="text-secondary ms-2">14416 / 1-800-891-4416</span>
                             </p>
                             <p className="mb-0">
-                                <span className="fw-bold">Email:</span> 
-                                <span className="text-secondary ms-2">help@ConnectUs.edu</span>
+                                <span className="fw-bold">Ambulance:</span> 
+                                <span className="text-secondary ms-2">108</span>
                             </p>
                         </div>
                     </div>

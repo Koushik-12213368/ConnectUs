@@ -22,8 +22,19 @@ const UserSchema = new mongoose.Schema({
 
   role: {
     type: String,
-    enum: ["student", "professional", "parent"],
+    enum: ["student", "professional", "parent", "doctor", "admin"],
     default: "student"
+  },
+
+  encryptionPublicKey: {
+    type: String,
+    default: null
+  },
+
+  doctorVerificationStatus: {
+    type: String,
+    enum: ["not_required", "not_submitted", "pending", "approved", "rejected"],
+    default: "not_required"
   }
 
 }, { timestamps: true });

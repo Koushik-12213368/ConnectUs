@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Login() {
+    const [loginType, setLoginType] = useState("user");
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -50,7 +51,9 @@ function Login() {
                         "http://localhost:8080/auth/login",
                         {
                             email: formData.email,
-                            password: formData.password
+                            password: formData.password,
+                            loginAsDoctor: loginType === "doctor",
+                            loginAsAdmin: loginType === "admin"
                         },
                         {
                             withCredentials: true
@@ -61,11 +64,27 @@ function Login() {
                         localStorage.setItem("isLoggedIn", "true");
                         localStorage.setItem("userName", data.user.fullName);
                         localStorage.setItem("userId", data.user._id); 
+                        localStorage.setItem("userRole", data.user.role);
+                        localStorage.setItem(
+                            "doctorVerificationStatus",
+                            data.user.doctorVerificationStatus || "not_required"
+                        );
                          console.log("Stored User ID:", data.user._id);
                          
                         alert("Login successful!");
 
-                        window.location.href = "/dashboard";
+                        const isDoctor =
+                            data.user.role === "doctor" || data.user.role === "professional";
+                        const doctorStatus = data.user.doctorVerificationStatus;
+                        const isAdmin = data.user.role === "admin";
+
+                        if (isAdmin) {
+                            window.location.href = "/admin-dashboard";
+                        } else if (isDoctor && doctorStatus !== "approved") {
+                            window.location.href = "/doctor-verification";
+                        } else {
+                            window.location.href = "/dashboard";
+                        }
                     }
                 } catch (error) {
                     alert(error.response?.data?.message || "Login failed");
@@ -118,6 +137,42 @@ function Login() {
                                     </div>
                                     <h2 className="fw-bold text-white mb-2">Welcome Back</h2>
                                     <p className="text-white opacity-75">Sign in to continue your journey</p>
+                                </div>
+
+                                <div className="mb-4">
+                                    <div className="d-flex rounded-3 overflow-hidden border border-light border-opacity-25">
+                                        <button
+                                            type="button"
+                                            className={`btn flex-fill ${loginType === "user" ? "btn-light text-dark" : "btn-dark text-light"}`}
+                                            onClick={() => setLoginType("user")}
+                                        >
+                                            User Login
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn flex-fill ${loginType === "doctor" ? "btn-light text-dark" : "btn-dark text-light"}`}
+                                            onClick={() => setLoginType("doctor")}
+                                        >
+                                            Doctor Login
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`btn flex-fill ${loginType === "admin" ? "btn-light text-dark" : "btn-dark text-light"}`}
+                                            onClick={() => setLoginType("admin")}
+                                        >
+                                            Admin Login
+                                        </button>
+                                    </div>
+                                    {loginType === "doctor" && (
+                                        <div className="alert alert-info mt-3 py-2 mb-0 small">
+                                            New doctors must submit certificates for admin verification after login.
+                                        </div>
+                                    )}
+                                    {loginType === "admin" && (
+                                        <div className="alert alert-secondary mt-3 py-2 mb-0 small">
+                                            Admin login allows document review and approval.
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Form */}
