@@ -465,7 +465,7 @@ function ExamStress() {
                 <div>
                   <h6 className="mb-1">Test Anxiety: Causes and Coping Strategies</h6>
                   <p className="small text-secondary mb-1">American Psychological Association • 6 min read</p>
-                  <a href="#" className="small text-primary">Read →</a>
+                  <a href="/resources" className="small text-primary">Read →</a>
                 </div>
               </div>
             </div>
@@ -475,7 +475,7 @@ function ExamStress() {
                 <div>
                   <h6 className="mb-1">The Student's Guide to Managing Stress</h6>
                   <p className="small text-secondary mb-1">Harvard Health • 8 min read</p>
-                  <a href="#" className="small text-primary">Read →</a>
+                  <a href="/resources" className="small text-primary">Read →</a>
                 </div>
               </div>
             </div>
@@ -485,7 +485,7 @@ function ExamStress() {
                 <div>
                   <h6 className="mb-1">Mindfulness Techniques for Exam Season</h6>
                   <p className="small text-secondary mb-1">Mindful.org • 5 min read</p>
-                  <a href="#" className="small text-primary">Read →</a>
+                  <a href="/resources" className="small text-primary">Read →</a>
                 </div>
               </div>
             </div>
@@ -495,7 +495,7 @@ function ExamStress() {
                 <div>
                   <h6 className="mb-1">Sleep, Stress, and Academic Performance</h6>
                   <p className="small text-secondary mb-1">Sleep Foundation • 7 min read</p>
-                  <a href="#" className="small text-primary">Read →</a>
+                  <a href="/resources" className="small text-primary">Read →</a>
                 </div>
               </div>
             </div>

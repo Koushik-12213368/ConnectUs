@@ -28,8 +28,6 @@ function Review() {
   ]);
 
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [hoveredRating, setHoveredRating] = useState(0);
-
   const [newReview, setNewReview] = useState({
     rating: 5,
     comment: "",
@@ -90,7 +88,6 @@ function Review() {
           name: ""
         });
         setShowReviewForm(false);
-        setHoveredRating(0);
       } catch (error) {
         console.log("Error saving review:", error);
       }
@@ -213,7 +210,6 @@ function Review() {
                 type="button"
                 onClick={() => {
                   setShowReviewForm(false);
-                  setHoveredRating(0);
                 }}
                 className="cancel-btn"
               >

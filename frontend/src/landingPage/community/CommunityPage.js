@@ -25,19 +25,6 @@ function CommunityPage() {
     }
   ]);
 
-  const handleNewPost = (content, anonymous) => {
-    const newPost = {
-      id: Date.now(),
-      author: anonymous ? "Anonymous" : "You",
-      content,
-      likes: 0,
-      comments: [],
-      time: "Just now"
-    };
-
-    setPosts(prev => [newPost, ...prev]);
-  };
-
   return (
     <>
       <Hero />

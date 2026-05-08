@@ -208,7 +208,15 @@ function Login() {
                                                 <i className="fas fa-lock text-white opacity-75 small"></i>
                                                 <label className="text-white small fw-semibold">Password</label>
                                             </div>
-                                            <a href="#" className="text-white-50 small" style={{ 
+                                            <button
+                                                type="button"
+                                                className="text-white-50 small"
+                                                style={{
+                                                    background: "none",
+                                                    border: "none",
+                                                    padding: 0,
+                                                    margin: 0,
+                                                    cursor: "pointer",
                                                 textDecoration: "none",
                                                 opacity: 0.8,
                                                 transition: "opacity 0.3s"
@@ -216,7 +224,7 @@ function Login() {
                                             onMouseEnter={(e) => e.target.style.opacity = 1}
                                             onMouseLeave={(e) => e.target.style.opacity = 0.8}>
                                                 Forgot?
-                                            </a>
+                                            </button>
                                         </div>
                                         <div className="position-relative">
                                             <input

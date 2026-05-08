@@ -49,7 +49,6 @@ function SignupPage() {
         }
 
         // Password validation
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         if (!formData.password) {
             newErrors.password = "Password is required";
         } else if (formData.password.length < 8) {
@@ -399,7 +398,7 @@ function SignupPage() {
                                             >
                                             I agree to the{" "}
                                             <a
-                                                href="#"
+                                                href="/terms"
                                                 style={{
                                                 color: "#9db4ff",
                                                 textDecoration: "underline"
@@ -409,7 +408,7 @@ function SignupPage() {
                                             </a>{" "}
                                             and{" "}
                                             <a
-                                                href="#"
+                                                href="/privacy"
                                                 style={{
                                                 color: "#9db4ff",
                                                 textDecoration: "underline"
